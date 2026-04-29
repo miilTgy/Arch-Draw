@@ -37,6 +37,7 @@ body,
 }
 
 .sidebar-item {
+  position: relative;
   padding: 10px 12px;
   border: 1px solid #a1a1aa;
   border-radius: 6px;
@@ -45,11 +46,19 @@ body,
   cursor: grab;
   font-size: 14px;
   font-weight: 600;
+  touch-action: none;
   user-select: none;
+  z-index: 1;
 }
 
-.sidebar-item:active {
+.sidebar-item:active,
+.sidebar-item-dragging {
   cursor: grabbing;
+}
+
+.sidebar-item-dragging {
+  z-index: 10;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.18);
 }
 
 .flow-wrapper {
