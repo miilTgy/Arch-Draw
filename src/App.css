@@ -7,8 +7,54 @@ body,
 }
 
 .app {
+  display: flex;
   width: 100vw;
   height: 100vh;
+}
+
+.sidebar {
+  box-sizing: border-box;
+  width: 200px;
+  height: 100%;
+  padding: 16px 12px;
+  border-right: 1px solid #d4d4d8;
+  background: #f8fafc;
+  color: #111827;
+  font-family: sans-serif;
+}
+
+.sidebar-title {
+  margin-bottom: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #52525b;
+}
+
+.sidebar-items {
+  display: grid;
+  gap: 10px;
+}
+
+.sidebar-item {
+  padding: 10px 12px;
+  border: 1px solid #a1a1aa;
+  border-radius: 6px;
+  background: white;
+  color: #18181b;
+  cursor: grab;
+  font-size: 14px;
+  font-weight: 600;
+  user-select: none;
+}
+
+.sidebar-item:active {
+  cursor: grabbing;
+}
+
+.flow-wrapper {
+  flex: 1;
+  height: 100%;
 }
 
 .module-node {

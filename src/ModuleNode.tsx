@@ -1,6 +1,13 @@
-import { Handle, Position } from '@xyflow/react'
+import { Handle, Position, type Node, type NodeProps } from '@xyflow/react'
 
-export function ModuleNode({ data }: any) {
+type ModuleNodeData = {
+  label?: string
+  shapeKind?: string
+}
+
+type ModuleNodeType = Node<ModuleNodeData, 'module'>
+
+export function ModuleNode({ data }: NodeProps<ModuleNodeType>) {
   return (
     <div className="module-node">
       <Handle
