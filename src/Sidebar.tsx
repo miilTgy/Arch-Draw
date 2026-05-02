@@ -8,15 +8,36 @@ type SidebarNodePayload = {
   nodeType: 'module'
   shapeKind: SidebarShapeKind
   defaultLabel: string
+  nodeClassName: string
 }
 
 const sidebarItems: SidebarNodePayload[] = [
-  { nodeType: 'module', shapeKind: 'module', defaultLabel: 'Module' },
-  { nodeType: 'module', shapeKind: 'register', defaultLabel: 'Register' },
-  { nodeType: 'module', shapeKind: 'mux', defaultLabel: 'Mux' },
-  { nodeType: 'module', shapeKind: 'alu', defaultLabel: 'ALU' },
-  { nodeType: 'module', shapeKind: 'memory', defaultLabel: 'Memory' },
+  { nodeType: 'module', shapeKind: 'module', defaultLabel: 'Module', nodeClassName: 'module-node' },
+  { nodeType: 'module', shapeKind: 'register', defaultLabel: 'Register', nodeClassName: 'module-node' },
+  { nodeType: 'module', shapeKind: 'mux', defaultLabel: 'Mux', nodeClassName: 'module-node' },
+  { nodeType: 'module', shapeKind: 'alu', defaultLabel: 'ALU', nodeClassName: 'module-node' },
+  { nodeType: 'module', shapeKind: 'memory', defaultLabel: 'Memory', nodeClassName: 'module-node' },
 ]
+
+const measureNodeClass = (className: string, label: string) => {
+  const measuringNode = document.createElement('div')
+  measuringNode.className = className
+  measuringNode.textContent = label
+  measuringNode.style.position = 'absolute'
+  measuringNode.style.visibility = 'hidden'
+  measuringNode.style.pointerEvents = 'none'
+  measuringNode.style.left = '-9999px'
+  measuringNode.style.top = '-9999px'
+
+  document.body.appendChild(measuringNode)
+  const { width, height } = measuringNode.getBoundingClientRect()
+  document.body.removeChild(measuringNode)
+
+  return {
+    width: Number.isFinite(width) ? width : 0,
+    height: Number.isFinite(height) ? height : 0,
+  }
+}
 
 const getId = () => {
   if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
@@ -78,10 +99,15 @@ export function Sidebar() {
         return
       }
 
+      const dropPosition = screenToFlowPosition(screenPosition)
+      const { width, height } = measureNodeClass(item.nodeClassName, item.defaultLabel)
       const newNode: Node = {
         id: getId(),
         type: item.nodeType,
-        position: screenToFlowPosition(screenPosition),
+        position: {
+          x: dropPosition.x - width / 2,
+          y: dropPosition.y - height / 2,
+        },
         data: {
           label: item.defaultLabel,
           shapeKind: item.shapeKind,
