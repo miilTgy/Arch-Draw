@@ -27,6 +27,7 @@ dist-electron
 # Tutorial files
 xyflow/**
 examples/**
+doc/**
 
 # vibe prompts
 prompts/**
