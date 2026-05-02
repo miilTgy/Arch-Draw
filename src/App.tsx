@@ -9,10 +9,9 @@ import {
   useEdgesState,
   type Connection,
   type Edge,
-  type Node,
 } from '@xyflow/react'
 
-import { ModuleNode } from './ModuleNode'
+import { ModuleNode, type ModuleNodeType } from './ModuleNode'
 import { Sidebar } from './Sidebar'
 
 import '@xyflow/react/dist/style.css'
@@ -22,18 +21,23 @@ const nodeTypes = {
   module: ModuleNode,
 }
 
-const initialNodes: Node[] = [
+const defaultModuleNodeSize = {
+  width: 180,
+  height: 70,
+}
+
+const initialNodes: ModuleNodeType[] = [
   {
     id: 'A',
     type: 'module',
     position: { x: 100, y: 120 },
-    data: { label: 'Module A' },
+    data: { label: 'Module A', ...defaultModuleNodeSize },
   },
   {
     id: 'B',
     type: 'module',
     position: { x: 420, y: 120 },
-    data: { label: 'Module B' },
+    data: { label: 'Module B', ...defaultModuleNodeSize },
   },
 ]
 

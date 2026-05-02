@@ -1,15 +1,17 @@
 import { Handle, Position, type Node, type NodeProps } from '@xyflow/react'
 
-type ModuleNodeData = {
+export type ModuleNodeData = {
+  width: number
+  height: number
   label?: string
   shapeKind?: string
 }
 
-type ModuleNodeType = Node<ModuleNodeData, 'module'>
+export type ModuleNodeType = Node<ModuleNodeData, 'module'>
 
 export function ModuleNode({ data }: NodeProps<ModuleNodeType>) {
   return (
-    <div className="module-node">
+    <div className="module-node" style={{ width: data.width, height: data.height }}>
       <Handle
         id="in"
         type="target"

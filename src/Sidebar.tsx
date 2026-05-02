@@ -2,42 +2,30 @@ import { useCallback, useRef, useState, type ReactNode } from 'react'
 import { useDraggable } from '@neodrag/react'
 import { useReactFlow, type Node, type XYPosition } from '@xyflow/react'
 
+import { type ModuleNodeData } from './ModuleNode'
+
 export type SidebarShapeKind = 'module' | 'register' | 'mux' | 'alu' | 'memory'
 
 type SidebarNodePayload = {
   nodeType: 'module'
   shapeKind: SidebarShapeKind
   defaultLabel: string
-  nodeClassName: string
+  width: number
+  height: number
+}
+
+const defaultModuleNodeSize = {
+  width: 180,
+  height: 70,
 }
 
 const sidebarItems: SidebarNodePayload[] = [
-  { nodeType: 'module', shapeKind: 'module', defaultLabel: 'Module', nodeClassName: 'module-node' },
-  { nodeType: 'module', shapeKind: 'register', defaultLabel: 'Register', nodeClassName: 'module-node' },
-  { nodeType: 'module', shapeKind: 'mux', defaultLabel: 'Mux', nodeClassName: 'module-node' },
-  { nodeType: 'module', shapeKind: 'alu', defaultLabel: 'ALU', nodeClassName: 'module-node' },
-  { nodeType: 'module', shapeKind: 'memory', defaultLabel: 'Memory', nodeClassName: 'module-node' },
+  { nodeType: 'module', shapeKind: 'module', defaultLabel: 'Module', ...defaultModuleNodeSize },
+  { nodeType: 'module', shapeKind: 'register', defaultLabel: 'Register', ...defaultModuleNodeSize },
+  { nodeType: 'module', shapeKind: 'mux', defaultLabel: 'Mux', ...defaultModuleNodeSize },
+  { nodeType: 'module', shapeKind: 'alu', defaultLabel: 'ALU', ...defaultModuleNodeSize },
+  { nodeType: 'module', shapeKind: 'memory', defaultLabel: 'Memory', ...defaultModuleNodeSize },
 ]
-
-const measureNodeClass = (className: string, label: string) => {
-  const measuringNode = document.createElement('div')
-  measuringNode.className = className
-  measuringNode.textContent = label
-  measuringNode.style.position = 'absolute'
-  measuringNode.style.visibility = 'hidden'
-  measuringNode.style.pointerEvents = 'none'
-  measuringNode.style.left = '-9999px'
-  measuringNode.style.top = '-9999px'
-
-  document.body.appendChild(measuringNode)
-  const { width, height } = measuringNode.getBoundingClientRect()
-  document.body.removeChild(measuringNode)
-
-  return {
-    width: Number.isFinite(width) ? width : 0,
-    height: Number.isFinite(height) ? height : 0,
-  }
-}
 
 const getId = () => {
   if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
@@ -100,17 +88,18 @@ export function Sidebar() {
       }
 
       const dropPosition = screenToFlowPosition(screenPosition)
-      const { width, height } = measureNodeClass(item.nodeClassName, item.defaultLabel)
-      const newNode: Node = {
+      const newNode: Node<ModuleNodeData, 'module'> = {
         id: getId(),
         type: item.nodeType,
         position: {
-          x: dropPosition.x - width / 2,
-          y: dropPosition.y - height / 2,
+          x: dropPosition.x - item.width / 2,
+          y: dropPosition.y - item.height / 2,
         },
         data: {
           label: item.defaultLabel,
           shapeKind: item.shapeKind,
+          width: item.width,
+          height: item.height,
         },
       }
 

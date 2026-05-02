@@ -68,8 +68,6 @@ body,
 
 .module-node {
   position: relative;
-  width: 180px;
-  height: 70px;
   border: 2px solid #222;
   border-radius: 6px;
   background: white;
