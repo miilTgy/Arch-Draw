@@ -99,7 +99,7 @@ function FlowCanvas() {
             fitView
           >
             <Background />
-            <Controls />
+            <Controls position="bottom-center" orientation="horizontal" />
           </ReactFlow>
           <CanvasSidebarTrigger />
         </main>
