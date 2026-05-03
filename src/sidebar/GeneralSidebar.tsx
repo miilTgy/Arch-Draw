@@ -1,11 +1,10 @@
-import { type ReactNode } from 'react'
+import { useEffect, useRef, type ReactNode } from 'react'
 
 import {
-  Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-  SidebarRail,
+  useSidebar,
 } from '@/components/ui/sidebar'
 
 type GeneralSidebarProps = {
@@ -13,8 +12,62 @@ type GeneralSidebarProps = {
 }
 
 export function GeneralSidebar({ children }: GeneralSidebarProps) {
+  const { isMobile, openMobile, state } = useSidebar()
+  const isSidebarOpen = isMobile ? openMobile : state === 'expanded'
+  const sidebarRef = useRef<HTMLElement>(null)
+  const animationRef = useRef<Animation | null>(null)
+  const previousOpenRef = useRef<boolean | null>(null)
+
+  useEffect(() => {
+    const sidebar = sidebarRef.current
+
+    if (!sidebar) {
+      return
+    }
+
+    const targetTransform = isSidebarOpen ? 'translateX(0)' : 'translateX(-100%)'
+    const previousOpen = previousOpenRef.current
+
+    if (previousOpen === null) {
+      sidebar.style.transform = targetTransform
+      previousOpenRef.current = isSidebarOpen
+      return
+    }
+
+    if (previousOpen === isSidebarOpen) {
+      return
+    }
+
+    const sourceTransform = previousOpen ? 'translateX(0)' : 'translateX(-100%)'
+
+    animationRef.current?.cancel()
+    sidebar.style.transform = sourceTransform
+    animationRef.current = sidebar.animate(
+      [
+        { transform: sourceTransform },
+        { transform: targetTransform },
+      ],
+      {
+        duration: 200,
+        easing: 'linear',
+        fill: 'forwards',
+      },
+    )
+
+    animationRef.current.onfinish = () => {
+      sidebar.style.transform = targetTransform
+      animationRef.current = null
+    }
+
+    previousOpenRef.current = isSidebarOpen
+  }, [isSidebarOpen])
+
   return (
-    <Sidebar collapsible="offcanvas">
+    <aside
+      ref={sidebarRef}
+      data-state={isSidebarOpen ? 'expanded' : 'collapsed'}
+      className="general-sidebar-shell"
+    >
       <SidebarHeader className="general-sidebar-header">
         <div className="general-sidebar-brand">
           <div className="general-sidebar-brand-mark">AD</div>
@@ -31,7 +84,6 @@ export function GeneralSidebar({ children }: GeneralSidebarProps) {
         <div className="general-sidebar-footer-label">Current panel</div>
         <div className="general-sidebar-footer-value">Shape Library</div>
       </SidebarFooter>
-      <SidebarRail />
-    </Sidebar>
+    </aside>
   )
 }

@@ -12,7 +12,6 @@ import {
 } from '@xyflow/react'
 
 import {
-  SidebarInset,
   SidebarProvider,
   SidebarTrigger,
   useSidebar,
@@ -89,7 +88,7 @@ function FlowCanvas() {
         <GeneralSidebar>
           <ShapeLibraryPanel />
         </GeneralSidebar>
-        <SidebarInset className="flow-wrapper">
+        <main className="flow-wrapper">
           <ReactFlow
             nodeTypes={nodeTypes}
             nodes={nodes}
@@ -103,7 +102,7 @@ function FlowCanvas() {
             <Controls />
           </ReactFlow>
           <CanvasSidebarTrigger />
-        </SidebarInset>
+        </main>
       </div>
     </SidebarProvider>
   )
