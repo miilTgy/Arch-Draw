@@ -12,12 +12,47 @@ type AddNodeFromShapeDropOptions = {
   setNodes: (payload: ModuleFlowNode[] | ((nodes: ModuleFlowNode[]) => ModuleFlowNode[])) => void
 }
 
+export type ShapeDragPreviewState = {
+  label: string
+  left: number
+  top: number
+  width: number
+  height: number
+}
+
 const getId = () => {
   if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
     return crypto.randomUUID()
   }
 
   return `node_${Date.now()}_${Math.random().toString(36).slice(2)}`
+}
+
+export function createShapeDragPreview(
+  shape: ShapeSpec,
+  rootNode: HTMLElement,
+): ShapeDragPreviewState {
+  const rect = rootNode.getBoundingClientRect()
+
+  return {
+    label: shape.defaultLabel,
+    left: rect.left,
+    top: rect.top,
+    width: rect.width,
+    height: rect.height,
+  }
+}
+
+export function moveShapeDragPreview(
+  preview: ShapeDragPreviewState,
+  offsetX: number,
+  offsetY: number,
+): ShapeDragPreviewState {
+  return {
+    ...preview,
+    left: preview.left + offsetX,
+    top: preview.top + offsetY,
+  }
 }
 
 export function addNodeFromShapeDrop({

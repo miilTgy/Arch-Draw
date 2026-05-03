@@ -1,8 +1,14 @@
 import { useCallback, useRef, useState, type ReactNode } from 'react'
+import { createPortal } from 'react-dom'
 import { useDraggable } from '@neodrag/react'
 import { useReactFlow, type XYPosition } from '@xyflow/react'
 
-import { addNodeFromShapeDrop } from '../commands/DragNDrop'
+import {
+  addNodeFromShapeDrop,
+  createShapeDragPreview,
+  moveShapeDragPreview,
+  type ShapeDragPreviewState,
+} from '../commands/DragNDrop'
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -19,15 +25,32 @@ type DraggableShapeItemProps = {
 
 function DraggableShapeItem({ children, item, onDrop }: DraggableShapeItemProps) {
   const draggableRef = useRef<HTMLDivElement>(null)
-  const [position, setPosition] = useState<XYPosition>({ x: 0, y: 0 })
+  const dragPreviewOriginRef = useRef<ShapeDragPreviewState | null>(null)
+  const [dragPosition, setDragPosition] = useState<XYPosition>({ x: 0, y: 0 })
+  const [dragPreview, setDragPreview] = useState<ShapeDragPreviewState | null>(null)
 
   const { isDragging } = useDraggable(draggableRef, {
-    position,
+    position: dragPosition,
+    transform: () => 'none',
+    onDragStart: ({ rootNode, offsetX, offsetY }) => {
+      const preview = createShapeDragPreview(item, rootNode)
+      dragPreviewOriginRef.current = preview
+      setDragPosition({ x: offsetX, y: offsetY })
+      setDragPreview(moveShapeDragPreview(preview, offsetX, offsetY))
+    },
     onDrag: ({ offsetX, offsetY }) => {
-      setPosition({ x: offsetX, y: offsetY })
+      const preview = dragPreviewOriginRef.current
+
+      setDragPosition({ x: offsetX, y: offsetY })
+
+      if (preview) {
+        setDragPreview(moveShapeDragPreview(preview, offsetX, offsetY))
+      }
     },
     onDragEnd: ({ event }) => {
-      setPosition({ x: 0, y: 0 })
+      dragPreviewOriginRef.current = null
+      setDragPreview(null)
+      setDragPosition({ x: 0, y: 0 })
       onDrop(item, {
         x: event.clientX,
         y: event.clientY,
@@ -41,6 +64,20 @@ function DraggableShapeItem({ children, item, onDrop }: DraggableShapeItemProps)
       className={`shape-library-item${isDragging ? ' shape-library-item-dragging' : ''}`}
     >
       {children}
+      {dragPreview && createPortal(
+        <div
+          className="shape-library-drag-preview"
+          style={{
+            left: dragPreview.left,
+            top: dragPreview.top,
+            width: dragPreview.width,
+            height: dragPreview.height,
+          }}
+        >
+          {dragPreview.label}
+        </div>,
+        document.body,
+      )}
     </div>
   )
 }
