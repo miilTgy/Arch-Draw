@@ -31,13 +31,13 @@ const initialNodes: ModuleNodeType[] = [
     id: 'A',
     type: 'module',
     position: { x: 100, y: 120 },
-    data: { label: 'Module A', ...defaultModuleNodeSize },
+    data: { label: 'Module A', shapeId: 'module', ...defaultModuleNodeSize },
   },
   {
     id: 'B',
     type: 'module',
     position: { x: 420, y: 120 },
-    data: { label: 'Module B', ...defaultModuleNodeSize },
+    data: { label: 'Module B', shapeId: 'module', ...defaultModuleNodeSize },
   },
 ]
 

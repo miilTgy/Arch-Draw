@@ -3,8 +3,9 @@ import { Handle, Position, type Node, type NodeProps } from '@xyflow/react'
 export type ModuleNodeData = {
   width: number
   height: number
-  label?: string
-  shapeId?: string
+  label: string
+  shapeId: string
+  logicType?: 'combinational' | 'sequential'
 }
 
 export type ModuleNodeType = Node<ModuleNodeData, 'module'>
