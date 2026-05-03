@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, type CSSProperties } from 'react'
 import {
   ReactFlow,
   ReactFlowProvider,
@@ -11,8 +11,16 @@ import {
   type Edge,
 } from '@xyflow/react'
 
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+  useSidebar,
+} from '@/components/ui/sidebar'
+
 import { ModuleNode, type ModuleNodeType } from '../nodes/ModuleNode'
-import { Sidebar } from '../sidebar/Sidebar'
+import { GeneralSidebar } from '../sidebar/GeneralSidebar'
+import { ShapeLibraryPanel } from '../sidebar/ShapeLibraryPanel'
 
 import '@xyflow/react/dist/style.css'
 import './App.css'
@@ -43,6 +51,17 @@ const initialNodes: ModuleNodeType[] = [
 
 const initialEdges: Edge[] = []
 
+function CanvasSidebarTrigger() {
+  const { isMobile, openMobile, state } = useSidebar()
+  const isSidebarOpen = isMobile ? openMobile : state === 'expanded'
+
+  return (
+    <SidebarTrigger
+      className={`sidebar-trigger ${isSidebarOpen ? 'sidebar-trigger-open' : 'sidebar-trigger-closed'}`}
+    />
+  )
+}
+
 function FlowCanvas() {
   const [nodes, , onNodesChange] = useNodesState(initialNodes)
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
@@ -58,23 +77,35 @@ function FlowCanvas() {
   )
 
   return (
-    <div className="app">
-      <Sidebar />
-      <div className="flow-wrapper">
-        <ReactFlow
-          nodeTypes={nodeTypes}
-          nodes={nodes}
-          edges={edges}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          onConnect={onConnect}
-          fitView
-        >
-          <Background />
-          <Controls />
-        </ReactFlow>
+    <SidebarProvider
+      style={
+        {
+          '--sidebar-width': '200px',
+          '--sidebar-width-mobile': '200px',
+        } as CSSProperties
+      }
+    >
+      <div className="app">
+        <GeneralSidebar>
+          <ShapeLibraryPanel />
+        </GeneralSidebar>
+        <SidebarInset className="flow-wrapper">
+          <ReactFlow
+            nodeTypes={nodeTypes}
+            nodes={nodes}
+            edges={edges}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onConnect={onConnect}
+            fitView
+          >
+            <Background />
+            <Controls />
+          </ReactFlow>
+          <CanvasSidebarTrigger />
+        </SidebarInset>
       </div>
-    </div>
+    </SidebarProvider>
   )
 }
 
