@@ -2,13 +2,13 @@ import { useCallback, useRef, useState, type ReactNode } from 'react'
 import { useDraggable } from '@neodrag/react'
 import { useReactFlow, type Node, type XYPosition } from '@xyflow/react'
 
-import { type ModuleNodeData } from './ModuleNode'
+import { type ModuleNodeData } from '../nodes/ModuleNode'
 
-export type SidebarShapeKind = 'module' | 'register' | 'mux' | 'alu' | 'memory'
+export type SidebarshapeId = 'module' | 'register' | 'mux' | 'alu' | 'memory'
 
 type SidebarNodePayload = {
   nodeType: 'module'
-  shapeKind: SidebarShapeKind
+  shapeId: SidebarshapeId
   defaultLabel: string
   width: number
   height: number
@@ -20,11 +20,11 @@ const defaultModuleNodeSize = {
 }
 
 const sidebarItems: SidebarNodePayload[] = [
-  { nodeType: 'module', shapeKind: 'module', defaultLabel: 'Module', ...defaultModuleNodeSize },
-  { nodeType: 'module', shapeKind: 'register', defaultLabel: 'Register', ...defaultModuleNodeSize },
-  { nodeType: 'module', shapeKind: 'mux', defaultLabel: 'Mux', ...defaultModuleNodeSize },
-  { nodeType: 'module', shapeKind: 'alu', defaultLabel: 'ALU', ...defaultModuleNodeSize },
-  { nodeType: 'module', shapeKind: 'memory', defaultLabel: 'Memory', ...defaultModuleNodeSize },
+  { nodeType: 'module', shapeId: 'module', defaultLabel: 'Module', ...defaultModuleNodeSize },
+  { nodeType: 'module', shapeId: 'register', defaultLabel: 'Register', ...defaultModuleNodeSize },
+  { nodeType: 'module', shapeId: 'mux', defaultLabel: 'Mux', ...defaultModuleNodeSize },
+  { nodeType: 'module', shapeId: 'alu', defaultLabel: 'ALU', ...defaultModuleNodeSize },
+  { nodeType: 'module', shapeId: 'memory', defaultLabel: 'Memory', ...defaultModuleNodeSize },
 ]
 
 const getId = () => {
@@ -97,7 +97,7 @@ export function Sidebar() {
         },
         data: {
           label: item.defaultLabel,
-          shapeKind: item.shapeKind,
+          shapeId: item.shapeId,
           width: item.width,
           height: item.height,
         },
@@ -114,7 +114,7 @@ export function Sidebar() {
       <div className="sidebar-items">
         {sidebarItems.map((item) => (
           <DraggableSidebarItem
-            key={item.shapeKind}
+            key={item.shapeId}
             item={item}
             onDrop={handleNodeDrop}
           >

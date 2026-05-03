@@ -11,8 +11,8 @@ import {
   type Edge,
 } from '@xyflow/react'
 
-import { ModuleNode, type ModuleNodeType } from './ModuleNode'
-import { Sidebar } from './Sidebar'
+import { ModuleNode, type ModuleNodeType } from '../nodes/ModuleNode'
+import { Sidebar } from '../sidebar/Sidebar'
 
 import '@xyflow/react/dist/style.css'
 import './App.css'

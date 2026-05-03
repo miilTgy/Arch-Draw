@@ -4,7 +4,7 @@ export type ModuleNodeData = {
   width: number
   height: number
   label?: string
-  shapeKind?: string
+  shapeId?: string
 }
 
 export type ModuleNodeType = Node<ModuleNodeData, 'module'>
